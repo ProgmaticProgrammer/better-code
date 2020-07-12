@@ -1,0 +1,4 @@
+C:/sw-testing/ModernCXX/SeanParentTalks/InheritanceIsTheBaseClassofEvil/src/build/CMakeFiles/Drawable.dir
+C:/sw-testing/ModernCXX/SeanParentTalks/InheritanceIsTheBaseClassofEvil/src/build/CMakeFiles/rebuild_cache.dir
+C:/sw-testing/ModernCXX/SeanParentTalks/InheritanceIsTheBaseClassofEvil/src/build/CMakeFiles/test.dir
+C:/sw-testing/ModernCXX/SeanParentTalks/InheritanceIsTheBaseClassofEvil/src/build/CMakeFiles/edit_cache.dir

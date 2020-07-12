@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/sw-testing/ModernCXX/SeanParentTalks/InheritanceIsTheBaseClassofEvil/src/build",
+  "command": "C:/Ruby26-x64/msys64/mingw64/bin/g++.exe   @CMakeFiles/Drawable.dir/includes_CXX.rsp -g   -std=gnu++11 -o CMakeFiles/Drawable.dir/main.cxx.obj -c C:/sw-testing/ModernCXX/SeanParentTalks/InheritanceIsTheBaseClassofEvil/src/main.cxx",
+  "file": "C:/sw-testing/ModernCXX/SeanParentTalks/InheritanceIsTheBaseClassofEvil/src/main.cxx"
+}
+]
