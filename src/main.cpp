@@ -123,6 +123,14 @@ const T& min(const T& x, const T& y) {
      }
      return y;
  }
+ // libstdc++ impl, unique_copy__ with iter_tag
+ // Source                  Destination          Trick
+ // input_iterator          output_iterator      a temp value remebering last copyed value
+ // forward_iterator        output_iterator      two iterators in source range
+ // input_iterator          forward_iterator     read back last copyed value from dest
+ //
+ // unique_copy call unique_copy__ with tags
+
 // creates a copy of some range of elements that contains no consecutive duplicates
  template<forward_iterator It, output_iterator Out, relation<value_type_t<It>> R>
  requires readable<It> && writable<Out, value_type_t<It>>
@@ -567,102 +575,102 @@ void journey0() {
   cppcon::unique(vals.begin(), vals.end());
 }
 
-// void journey1() {
-//     std::vector<int> values = {1, 1, 2, 3, 3, 3, 4, 4, 5};
-//     auto values_copy = values;
-//     std::vector<int> unique_copies;
-//     cppcon::unique_copy(std::begin(values), std::end(values), std::back_inserter(unique_copies));
+void journey1() {
+    const std::vector<int> values = {1, 1, 2, 3, 3, 3, 4, 4, 5};//sorted here
+    std::vector<int> values_copy = values;
+    std::vector<int> unique_copies;
+    cppcon::unique_copy(std::begin(values), std::end(values), std::back_inserter(unique_copies));
 
     
-//     assert(cppcon::unique(std::begin(values_copy), std::end(values_copy)) - std::begin(values_copy) == 5);
-//     assert(cppcon::unique_count(std::begin(values), std::end(values), 0) == 5);
+    assert(cppcon::unique(std::begin(values_copy), std::end(values_copy)) - std::begin(values_copy) == 5);
+    assert(cppcon::unique_count(std::begin(values), std::end(values), 0) == 5);
 
-//     std::vector<std::pair<int, size_t>> values_frequencies;
-//     cppcon::frequencies(std::begin(values), std::end(values), std::back_inserter(values_frequencies));
+    std::vector<std::pair<int, size_t>> values_frequencies;
+    cppcon::frequencies(std::begin(values), std::end(values), std::back_inserter(values_frequencies));
 
-//     std::vector<std::pair<int, size_t>> expected_frequencies = {{1, 2ul}, {2, 1ul}, {3, 3ul}, {4, 2ul}, {5, 1ul}};
-//     assert(values_frequencies == expected_frequencies);
+    std::vector<std::pair<int, size_t>> expected_frequencies = {{1, 2ul}, {2, 1ul}, {3, 3ul}, {4, 2ul}, {5, 1ul}};
+    assert(values_frequencies == expected_frequencies);
 
-//     std::vector<int> unique_elements;
-//     std::vector<size_t> occurences;
-//     cppcon::frequencies(std::begin(values), std::end(values), std::back_inserter(unique_elements), std::back_inserter(occurences));
+    std::vector<int> unique_elements;
+    std::vector<size_t> occurences;
+    cppcon::frequencies(std::begin(values), std::end(values), std::back_inserter(unique_elements), std::back_inserter(occurences));
 
-//     std::vector<int> expected_unique_elements = {1, 2, 3, 4, 5};
-//     std::vector<size_t> expected_occurences= {2ul, 1ul, 3ul, 2ul, 1ul};
-//     assert(unique_elements == expected_unique_elements);
-//     assert(occurences == expected_occurences);
-//     assert(unique_copies == expected_unique_elements);
-// }
+    std::vector<int> expected_unique_elements = {1, 2, 3, 4, 5};
+    std::vector<size_t> expected_occurences= {2ul, 1ul, 3ul, 2ul, 1ul};
+    assert(unique_elements == expected_unique_elements);
+    assert(occurences == expected_occurences);
+    assert(unique_copies == expected_unique_elements);
+}
 
-// void journey2() {
-//     std::vector<int> values = {1, 1, 2, 3, 3, 3, 4, 4, 5};
-//     std::vector<std::pair<int, size_t>> values_and_frequencies;
-//     cppcon::transform_subgroups(
-//         std::begin(values),
-//         std::end(values),
-//         std::back_inserter(values_and_frequencies),
-//         std::equal_to<int>(),
-//         [](auto first, size_t n) { return std::pair<int, size_t>(*first, n); }
-//     );
+void journey2() {
+    std::vector<int> values = {1, 1, 2, 3, 3, 3, 4, 4, 5};
+    std::vector<std::pair<int, size_t>> values_and_frequencies;
+    cppcon::transform_subgroups(
+        std::begin(values),
+        std::end(values),
+        std::back_inserter(values_and_frequencies),
+        std::equal_to<int>(),
+        [](auto first, size_t n) { return std::pair<int, size_t>(*first, n); }
+    );
 
-//     std::vector<std::pair<char, int>> pairs = {{'a', 10}, {'a', 2}, {'b', 10}, {'c', 12}};
-//     std::vector<std::pair<char, int>> expected_pairs = {{'a', 12}, {'b', 10}, {'c', 12}};
+    std::vector<std::pair<char, int>> pairs = {{'a', 10}, {'a', 2}, {'b', 10}, {'c', 12}};
+    std::vector<std::pair<char, int>> expected_pairs = {{'a', 12}, {'b', 10}, {'c', 12}};
 
     
-//     struct equal_first {
-//         bool operator()(std::pair<char, int> x, std::pair<char, int> y) const {
-//             return x.first == y.first;
-//         }
-//     };
-//     typedef decltype(pairs)::iterator iterator;
-//     auto middle = cppcon::squash_subgroups(std::begin(pairs), std::end(pairs), equal_first(), [](iterator first, iterator last) {
-//         int n = std::accumulate(first, last, 0, [](int x, auto y) { return x + y.second; });
-//         return std::pair<char, int>(first->first, n);
-//     });
-// }
+    struct equal_first {
+        bool operator()(std::pair<char, int> x, std::pair<char, int> y) const {
+            return x.first == y.first;
+        }
+    };
+    typedef decltype(pairs)::iterator iterator;
+    auto middle = cppcon::squash_subgroups(std::begin(pairs), std::end(pairs), equal_first(), [](iterator first, iterator last) {
+        int n = std::accumulate(first, last, 0, [](int x, auto y) { return x + y.second; });
+        return std::pair<char, int>(first->first, n);
+    });
+}
 
 
-// void journey3() {
-//     std::string str = "a_b_c_de_";
-//     std::string str_new;
-//     cppcon::split(std::begin(str), std::end(str), '_', [&str_new](auto first, auto last) { std::copy(first, last, std::back_inserter(str_new)); });
-//     assert(str_new == "abcde");
-//     std::string str_out;
+void journey3() {
+    std::string str = "a_b_c_de_";
+    std::string str_new;
+    cppcon::split(std::begin(str), std::end(str), '_', [&str_new](auto first, auto last) { std::copy(first, last, std::back_inserter(str_new)); });
+    assert(str_new == "abcde");
+    std::string str_out;
 
-//     cppcon::transform_split(std::begin(str), std::end(str), std::back_inserter(str_out), '_', [](auto first, auto last) { return *first; });
-//     assert(str_out == "abcd");
+    cppcon::transform_split(std::begin(str), std::end(str), std::back_inserter(str_out), '_', [](auto first, auto last) { return *first; });
+    assert(str_out == "abcd");
 
-//     str_out.clear();
-//     str = "a__b__c__d";
-//     std::string delimiter = "__";
-//     cppcon::transform_split(std::begin(str), std::end(str), std::back_inserter(str_out), std::begin(delimiter), std::end(delimiter), [](auto first, auto last) { return *first; });
-//     assert(str_out == "abcd");
-// }
+    str_out.clear();
+    str = "a__b__c__d";
+    std::string delimiter = "__";
+    cppcon::transform_split(std::begin(str), std::end(str), std::back_inserter(str_out), std::begin(delimiter), std::end(delimiter), [](auto first, auto last) { return *first; });
+    assert(str_out == "abcd");
+}
 
-// void journey4() {
-//   struct is_even {
-//     bool operator()(int x) const { return x % 2 == 0; }
-//   };
-//   std::vector<int> values = {1, 2, 3, 4, 5, 6};
-//   std::vector<int> expected_values = {1, 3, 5};
+void journey4() {
+  struct is_even {
+    bool operator()(int x) const { return x % 2 == 0; }
+  };
+  std::vector<int> values = {1, 2, 3, 4, 5, 6};
+  std::vector<int> expected_values = {1, 3, 5};
 
-//   auto middle = cppcon::remove_if(values.begin(), values.end(), is_even());
-//   values.resize(middle - values.begin());
-//   assert(values == expected_values);
+  auto middle = cppcon::remove_if(values.begin(), values.end(), is_even());
+  values.resize(middle - values.begin());
+  assert(values == expected_values);
 
-//   values = {1, 2, 3, 4, 5, 6};
-//   expected_values = {1, 3, 5, 4, 2, 6};
-//   middle = cppcon::semistable_partition(values.begin(), values.end(), is_even());
-//   assert(std::equal(std::begin(values), middle, values.begin(), values.begin() + 3));
-//   assert(values == expected_values);
-// }
+  values = {1, 2, 3, 4, 5, 6};
+  expected_values = {1, 3, 5, 4, 2, 6};
+  middle = cppcon::semistable_partition(values.begin(), values.end(), is_even());
+  assert(std::equal(std::begin(values), middle, values.begin(), values.begin() + 3));
+  assert(values == expected_values);
+}
 
 int main() {
     journey0(); // min, max
-    // journey1(); // unique, unique_copy
-    // journey2(); // frequencies
-    // journey3(); // split
-    // journey4(); // remove_if, semistable_partition
+    journey1(); // unique, unique_copy
+    journey2(); // frequencies
+    journey3(); // split
+    journey4(); // remove_if, semistable_partition
 
 
     struct foo {
