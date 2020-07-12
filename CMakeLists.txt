@@ -6,7 +6,7 @@ include_directories(".")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED)
 
-add_executable(Registry main.cpp Registry.hpp)
+add_executable(Registry main.cpp Registry.hpp after_idle.hpp)
 
 include(CTest)
 enable_testing()
