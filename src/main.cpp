@@ -148,7 +148,9 @@ const T& min(const T& x, const T& y) {
  requires readable<It> && writable<It>
  It unique(It first, It last, R r) {
      if (first == last) { return last; }
-     It result = first; ++first;
+
+     It result = first; 
+     ++first;
      while (first != last) {
          if (!r(*result, *first)) {
              ++result;
@@ -554,7 +556,7 @@ void journey0() {
   assert(&cppcon::min(px, py, [](auto x) { return x.first; }) == &px);
   assert(&cppcon::max(px, py, [](auto x) { return x.first; }) == &py);
 
-  std::vector<int> vals;
+  std::vector<int> vals = {1, 2, 1, 2};
   cppcon::unique(vals.begin(), vals.end());
 }
 
