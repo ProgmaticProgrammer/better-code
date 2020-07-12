@@ -11,7 +11,11 @@
 // TODO: properties for relations
 
 namespace cppcon {
-
+// min/max
+// int min(int, int), double min(double, double)
+// T min(T, T)
+// <
+// proj on T
 template<totally_ordered T>
 const T& min(const T& x, const T& y) {
     if (y < x) {
@@ -48,8 +52,8 @@ const T& min(const T& x, const T& y) {
      }
      return x;
  }
-
- template<typename T, weak_strict_ordering<T> R>
+///https://www.boost.org/sgi/stl/StrictWeakOrdering.html
+ template<typename T, strict_weak_ordering<T> R>
  const T& min(const T& x, const T& y, R r) {
      if (r(y, x)) {
          return y;
@@ -57,7 +61,7 @@ const T& min(const T& x, const T& y) {
      return x;
  }
 
- template<typename T, weak_strict_ordering<T> R>
+ template<typename T, strict_weak_ordering<T> R>
  T& min(T& x, T& y, R r) {
      if (r(y, x)) {
          return y;
@@ -119,7 +123,7 @@ const T& min(const T& x, const T& y) {
      }
      return y;
  }
-
+// creates a copy of some range of elements that contains no consecutive duplicates
  template<forward_iterator It, output_iterator Out, relation<value_type_t<It>> R>
  requires readable<It> && writable<Out, value_type_t<It>>
  Out unique_copy(It first, It last, Out out, R r) {
@@ -143,7 +147,10 @@ const T& min(const T& x, const T& y) {
  Out unique_copy(It first, It last, Out out) {
      return cppcon::unique_copy(first, last, out, std::equal_to<value_type_t<It>>());
  }
-
+//removes consecutive duplicate elements
+// unique({1,2,1,1,3,3,3,4,5,4}) -> {1 2 1 3 4 5 4}
+// NOTE: sort followed by unique, to remove all duplicates
+// sort(unique({1,2,1,1,3,3,3,4,5,4})) -> {1 2 3 4 5}
  template<forward_iterator It, relation<value_type_t<It>> R>
  requires readable<It> && writable<It>
  It unique(It first, It last, R r) {

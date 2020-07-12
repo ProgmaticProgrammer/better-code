@@ -93,7 +93,7 @@ template<typename R, typename T>
 concept relation = homogeneous_predicate<R, T, T>;
 
 template<typename R, typename T>
-concept weak_strict_ordering = regular<T> && relation<R, T>; 
+concept strict_weak_ordering = regular<T> && relation<R, T>; 
 
 template<typename F, typename T>
 concept unary_function = functional_procedure<F, T> && regular<T>;
