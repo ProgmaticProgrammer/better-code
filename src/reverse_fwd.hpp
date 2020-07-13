@@ -20,17 +20,23 @@ void reverse_with_rotate(FwdIt f, FwdIt l) {
 }
 
 template <class ForwardIterator, class N>
-auto reverse_n(ForwardIterator f, N n) {
-  if (n < 2) return std::next(f, n);
+auto reverse_n(ForwardIterator first_of_full_range, N length) {
+  // already reverved, so return end_of_the_range
+  if (length < 2) return std::next(first_of_full_range, length);
+  //  1st rng 2nd rng
+  //  (12345).(67890)
+  //  (54321).(09876)
+  //  (09876).(54321)
 
-  auto h = n / 2;
-  auto m1 = reverse_n(f, h);
-  auto m2 = std::next(m1, n % 2);
-  auto l = reverse_n(m2, h);
+  auto first_of_first_range = first_of_full_range;
+  auto half_length = length / 2;
+  auto last_of_first_range = reverse_n(first_of_first_range, half_length);
+  auto first_of_second_range = std::next(last_of_first_range, length % 2);
+  auto last_of_second_range = reverse_n(first_of_second_range, half_length);
 
-  std::swap_ranges(f, m1, m2);
+  std::swap_ranges(first_of_first_range, last_of_first_range, first_of_second_range);
 
-  return l;
+  return last_of_second_range;
 }
 
 }  // namespace detail
