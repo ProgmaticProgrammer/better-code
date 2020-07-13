@@ -14,12 +14,12 @@ namespace subtile_defects {
 
 template <typename T>
 const T& clamp(const T& a, const T& lo, const T& hi) {
-  return min(max(lo, a), hi);
+  return min(max(a, lo), hi);
 }
 
 template <typename T, typename Compare>
 const T& clamp(const T& a, const T& lo, const T& hi, Compare comp) {
-  return min(max(lo, a, comp), hi, comp);
+  return min(max(a, lo, comp), hi, comp);
 }
 
 }  // namespace subtile_defects
